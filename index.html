@@ -1,278 +1,391 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Dados - Baixador de Vídeos</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        body {
-            background-color: #020617;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        header {
-            border-bottom: 1px solid #1e293b;
-            background-color: #0f172a;
-            padding: 16px 24px;
-        }
-        .header-content {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-        .logo-box {
-            width: 34px;
-            height: 34px;
-            background-color: #2563eb;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        .brand span {
-            color: #3b82f6;
-        }
-        .badge {
-            font-size: 12px;
-            color: #94a3b8;
-            background-color: #1e293b;
-            padding: 6px 12px;
-            border-radius: 999px;
-        }
-        main {
-            max-width: 680px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 48px 20px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            line-height: 1.2;
-        }
-        h1 span {
-            color: #3b82f6;
-        }
-        .subtitle {
-            color: #94a3b8;
-            font-size: 15px;
-            margin-bottom: 32px;
-        }
-        .search-box {
-            display: flex;
-            gap: 10px;
-            background-color: #0f172a;
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid #1e293b;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-        }
-        input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            padding: 12px 14px;
-            font-size: 14px;
-            outline: none;
-        }
-        input::placeholder {
-            color: #64748b;
-        }
-        button {
-            background-color: #2563eb;
-            color: #ffffff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        button:hover {
-            background-color: #1d4ed8;
-        }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .hidden {
-            display: none !important;
-        }
-        #loading {
-            margin-top: 28px;
-            color: #60a5fa;
-            font-size: 14px;
-        }
-        #erroBox {
-            margin-top: 24px;
-            background-color: rgba(127, 29, 29, 0.4);
-            border: 1px solid #991b1b;
-            color: #fca5a5;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        #resultado {
-            margin-top: 32px;
-            background-color: #0f172a;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            gap: 18px;
-            align-items: center;
-            text-align: left;
-        }
-        #videoCapa {
-            width: 150px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-            background-color: #1e293b;
-        }
-        .info-video {
-            flex: 1;
-        }
-        #videoTitulo {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 14px;
-            color: #f8fafc;
-        }
-        #linkDownload {
-            display: inline-block;
-            background-color: #059669;
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            padding: 10px 20px;
-            border-radius: 8px;
-        }
-        #linkDownload:hover {
-            background-color: #047857;
-        }
-        footer {
-            border-top: 1px solid #1e293b;
-            padding: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #64748b;
-        }
-        @media (max-width: 600px) {
-            .search-box, #resultado {
-                flex-direction: column;
-            }
-            #videoCapa {
-                width: 100%;
-                height: 180px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mega Dados – Baixar vídeos grátis</title>
+<meta name="description" content="Baixe vídeos do TikTok, Instagram Reels, Facebook e YouTube de forma grátis e rápida. Cole o link e baixe.">
+<style>
+  :root {
+    --navy: #07163a;
+    --navy-2: #0c2152;
+    --navy-3: #12306f;
+    --blue: #1f6bff;
+    --blue-hover: #4285ff;
+    --white: #ffffff;
+    --muted: #b6c4e6;
+    --line: rgba(255, 255, 255, 0.14);
+    --error-bg: #3a1020;
+    --error-text: #ffb4c2;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    min-height: 100vh;
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    color: var(--white);
+    background: var(--navy);
+    background-image: radial-gradient(900px 500px at 85% -10%, var(--navy-3), transparent 70%);
+    line-height: 1.55;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Cabeçalho */
+  header { padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+  }
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--blue);
+    display: grid;
+    place-items: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+  .brand span.light { color: var(--blue-hover); }
+
+  /* Conteúdo principal */
+  main { flex: 1; padding: 56px 0 40px; }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 3.1rem);
+    line-height: 1.12;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    max-width: 14em;
+  }
+  .lead {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 1.08rem;
+    max-width: 34em;
+  }
+
+  /* Formulário */
+  .form {
+    margin-top: 34px;
+    display: flex;
+    gap: 10px;
+    background: var(--navy-2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 8px;
+  }
+  .form input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--white);
+    font-size: 1rem;
+    padding: 14px 14px;
+  }
+  .form input::placeholder { color: #8ea0cc; }
+  .form:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(31, 107, 255, 0.35); }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: 0;
+    border-radius: 11px;
+    background: var(--blue);
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 14px 26px;
+    transition: background 0.15s;
+  }
+  button:hover { background: var(--blue-hover); }
+  button:focus-visible, a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  button:disabled { opacity: 0.6; cursor: wait; }
+
+  .platforms {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  /* Estados */
+  .status { margin-top: 26px; }
+
+  .loading {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    color: var(--muted);
+  }
+  .loading.show { display: flex; }
+  .spinner {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    border: 3px solid var(--line);
+    border-top-color: var(--blue-hover);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error {
+    display: none;
+    background: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid rgba(255, 180, 194, 0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .error.show { display: block; }
+
+  /* Resultado */
+  .result {
+    display: none;
+    background: var(--white);
+    color: var(--navy);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .result.show { display: flex; }
+  .result .cover {
+    width: 220px;
+    flex: none;
+    background: #dfe7fb;
+    object-fit: cover;
+    display: block;
+  }
+  .result .info {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    min-width: 0;
+  }
+  .result h2 {
+    font-size: 1.05rem;
+    line-height: 1.4;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .download {
+    align-self: flex-start;
+    display: inline-block;
+    background: var(--blue);
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 700;
+    padding: 14px 26px;
+    border-radius: 11px;
+    transition: background 0.15s;
+  }
+  .download:hover { background: var(--blue-hover); }
+  .hint { font-size: 0.85rem; color: #4a5b86; }
+
+  /* Como usar */
+  .steps {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .steps h3 { font-size: 1.1rem; margin-bottom: 12px; }
+  .steps ol { color: var(--muted); padding-left: 22px; }
+  .steps li { margin-bottom: 6px; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 22px 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 560px) {
+    main { padding-top: 36px; }
+    .form { flex-direction: column; }
+    .form button { width: 100%; }
+    .result.show { flex-direction: column; }
+    .result .cover { width: 100%; max-height: 260px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 3s; }
+    button, .download { transition: none; }
+  }
+</style>
 </head>
 <body>
 
-    <header>
-        <div class="header-content">
-            <div class="brand">
-                <div class="logo-box">M</div>
-                <div>MEGA <span>DADOS</span></div>
-            </div>
-            <div class="badge">Downloader Oficial</div>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>Mega <span class="light">Dados</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <h1>Baixe vídeos das redes sociais, grátis.</h1>
+    <p class="lead">Cole o link do vídeo, toque em Baixar e guarde-o no seu telemóvel ou computador.</p>
+
+    <div class="form">
+      <input id="link" type="url" inputmode="url" autocomplete="off"
+             placeholder="Cole aqui o link do vídeo" aria-label="Link do vídeo">
+      <button id="btn" type="button">Baixar</button>
+    </div>
+    <p class="platforms">Funciona com TikTok, Instagram Reels, Facebook e YouTube.</p>
+
+    <div class="status" aria-live="polite">
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <div id="loadingText">A procurar o vídeo…</div>
+      </div>
+
+      <div id="error" class="error"></div>
+
+      <div id="result" class="result">
+        <img id="cover" class="cover" alt="Capa do vídeo" referrerpolicy="no-referrer">
+        <div class="info">
+          <h2 id="title"></h2>
+          <a id="download" class="download" href="#" target="_blank" rel="noopener noreferrer">Baixar vídeo</a>
+          <p class="hint">Se o vídeo abrir noutra página, toque e segure sobre ele (ou clique nos três pontos) e escolha “Guardar vídeo” / “Baixar”.</p>
         </div>
-    </header>
+      </div>
+    </div>
 
-    <main>
-        <h1>Baixe vídeos das redes sociais <span>grátis</span></h1>
-        <p class="subtitle">Cole abaixo o link do Instagram Reels, TikTok, Facebook ou YouTube para gerar o download rápido.</p>
+    <section class="steps">
+      <h3>Como usar</h3>
+      <ol>
+        <li>Abra a rede social e copie o link do vídeo.</li>
+        <li>Cole o link no campo acima.</li>
+        <li>Toque em Baixar e depois em Baixar vídeo.</li>
+      </ol>
+    </section>
+  </div>
+</main>
 
-        <div class="search-box">
-            <input type="text" id="videoUrl" placeholder="Cole o link do vídeo aqui (https://...)">
-            <button onclick="buscarVideo()" id="btnBuscar">Processar Vídeo</button>
-        </div>
+<footer>
+  <div class="wrap">© <span id="year"></span> Mega Dados. Use apenas para vídeos que tem direito de guardar.</div>
+</footer>
 
-        <div id="loading" class="hidden">Conectando ao servidor Mega Dados... (pode levar até 30s na primeira vez)</div>
+<script>
+  // Endereço da API no Render. Se o seu for diferente, mude só esta linha.
+  const API_URL = "https://onrender.com/baixar";
 
-        <div id="erroBox" class="hidden"></div>
+  const input = document.getElementById("link");
+  const btn = document.getElementById("btn");
+  const loading = document.getElementById("loading");
+  const loadingText = document.getElementById("loadingText");
+  const errorBox = document.getElementById("error");
+  const resultBox = document.getElementById("result");
+  const cover = document.getElementById("cover");
+  const title = document.getElementById("title");
+  const download = document.getElementById("download");
 
-        <div id="resultado" class="hidden">
-            <img id="videoCapa" src="" alt="Capa do vídeo">
-            <div class="info-video">
-                <div id="videoTitulo">Título do vídeo</div>
-                <a id="linkDownload" href="#" target="_blank" rel="noopener noreferrer">⬇ Baixar Vídeo Agora</a>
-            </div>
-        </div>
-    </main>
+  document.getElementById("year").textContent = new Date().getFullYear();
 
-    <footer>
-        © 2026 Mega Dados — Todos os direitos reservados.
-    </footer>
+  function reset() {
+    loading.classList.remove("show");
+    errorBox.classList.remove("show");
+    resultBox.classList.remove("show");
+  }
 
-    <script>
-        const SERVIDOR = "https://onrender.com";
+  function showError(msg) {
+    reset();
+    errorBox.textContent = msg;
+    errorBox.classList.add("show");
+  }
 
-        async function buscarVideo() {
-            const urlInput = document.getElementById("videoUrl").value.trim();
-            const loading = document.getElementById("loading");
-            const resultado = document.getElementById("resultado");
-            const erroBox = document.getElementById("erroBox");
-            const btn = document.getElementById("btnBuscar");
+  async function baixar() {
+    const link = input.value.trim();
 
-            if (!urlInput) {
-                erroBox.textContent = "Por favor, cole o link de um vídeo primeiro.";
-                erroBox.classList.remove("hidden");
-                return;
-            }
+    if (!/^https?:\/\//i.test(link)) {
+      showError("Cole um link válido, começando por http:// ou https://");
+      return;
+    }
 
-            erroBox.classList.add("hidden");
-            resultado.classList.add("hidden");
-            loading.classList.remove("hidden");
-            btn.disabled = true;
+    reset();
+    loading.classList.add("show");
+    loadingText.textContent = "A procurar o vídeo…";
+    btn.disabled = true;
 
-            try {
-                const resposta = await fetch(`${SERVIDOR}/baixar?url=${encodeURIComponent(urlInput)}`);
-                const dados = await resposta.json();
+    // Servidores grátis do Render "adormecem"; a 1.ª vez pode demorar.
+    const avisoLento = setTimeout(() => {
+      loadingText.textContent = "O servidor está a acordar. Pode demorar até 1 minuto, aguarde…";
+    }, 6000);
 
-                if (!resposta.ok || !dados.link_video) {
-                    throw new Error(dados.detail || "Não foi possível obter o vídeo.");
-                }
+    const controlador = new AbortController();
+    const limite = setTimeout(() => controlador.abort(), 90000);
 
-                document.getElementById("videoTitulo").textContent = dados.titulo || "Vídeo encontrado";
-                document.getElementById("videoCapa").src = dados.capa || "";
-                document.getElementById("linkDownload").href = dados.link_video;
-                resultado.classList.remove("hidden");
-            } catch (erro) {
-                erroBox.textContent = "Erro ao processar este link. Verifique se o vídeo é público e tente novamente.";
-                erroBox.classList.remove("hidden");
-            } finally {
-                loading.classList.add("hidden");
-                btn.disabled = false;
-            }
-        }
-    </script>
+    try {
+      const resposta = await fetch(API_URL + "?url=" + encodeURIComponent(link), {
+        signal: controlador.signal
+      });
+
+      let dados = null;
+      try { dados = await resposta.json(); } catch (e) { /* resposta sem JSON */ }
+
+      if (!resposta.ok || !dados || !dados.link_video) {
+        const motivo = dados && (dados.erro || dados.detail || dados.error);
+        showError(
+          typeof motivo === "string" && motivo
+            ? "Não foi possível baixar: " + motivo
+            : "Não foi possível baixar este vídeo. Confirme se o link está correcto e se o vídeo é público."
+        );
+        return;
+      }
+
+      title.textContent = dados.titulo || "Vídeo encontrado";
+      download.href = dados.link_video;
+
+      if (dados.capa) {
+        cover.src = dados.capa;
+        cover.style.display = "block";
+        cover.onerror = () => { cover.style.display = "none"; };
+      } else {
+        cover.style.display = "none";
+      }
+
+      reset();
+      resultBox.classList.add("show");
+    } catch (erro) {
+      if (erro.name === "AbortError") {
+        showError("O servidor demorou demasiado a responder. Tente novamente.");
+      } else {
+        showError("Não foi possível ligar ao servidor. Verifique a internet e tente novamente.");
+      }
+    } finally {
+      clearTimeout(avisoLento);
+      clearTimeout(limite);
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener("click", baixar);
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") baixar(); });
+</script>
 </body>
 </html>
