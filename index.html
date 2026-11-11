@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Dados - Baixador de Vídeos</title>
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col justify-between font-sans">
+
+    <!-- Cabeçalho -->
+    <header class="border-b border-slate-800 bg-slate-900/60 py-4 px-6">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-lg">M</div>
+                <span class="text-xl font-bold tracking-wide text-white">MEGA <span class="text-blue-500">DADOS</span></span>
+            </div>
+            <span class="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-full">Downloader Oficial</span>
+        </div>
+    </header>
+
+    <!-- Área Principal -->
+    <main class="max-w-2xl w-full mx-auto px-4 py-12 text-center">
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-3">
+            Baixe vídeos das redes sociais <span class="text-blue-500">grátis</span>
+        </h1>
+        <p class="text-slate-400 mb-8 text-sm md:text-base">
+            Cole abaixo o link do Instagram Reels, TikTok, Facebook ou YouTube para gerar o download rápido.
+        </p>
+
+        <!-- Caixa de Pesquisa -->
+        <div class="flex flex-col sm:flex-row gap-3 bg-slate-900 p-2 rounded-xl border border-slate-800 shadow-lg">
+            <input 
+                type="text" 
+                id="videoUrl" 
+                placeholder="Cole o link do vídeo aqui (https://...)" 
+                class="flex-1 bg-transparent px-4 py-3 text-white placeholder-slate-500 focus:outline-none text-sm"
+            >
+            <button 
+                onclick="buscarVideo()" 
+                id="btnBuscar"
+                class="bg-blue-600 hover:bg-blue-500 transition font-semibold px-6 py-3 rounded-lg text-sm cursor-pointer">
+                Processar Vídeo
+            </button>
+        </div>
+
+        <!-- Aviso de Carregamento -->
+        <div id="loading" class="hidden mt-8 text-blue-400 text-sm animate-pulse">
+            Conectando ao servidor Mega Dados... (pode levar até 30s na primeira vez)
+        </div>
+
+        <!-- Mensagem de Erro -->
+        <div id="erroBox" class="hidden mt-6 bg-red-950/60 border border-red-800 text-red-300 px-4 py-3 rounded-lg text-sm"></div>
+
+        <!-- Resultado do Vídeo -->
+        <div id="resultado" class="hidden mt-8 bg-slate-900 border border-slate-800 rounded-xl p-5 text-left shadow-xl">
+            <div class="flex flex-col sm:flex-row gap-4 items-center">
+                <img id="videoCapa" src="" alt="Capa do vídeo" class="w-full sm:w-40 h-28 object-cover rounded-lg bg-slate-800">
+                <div class="flex-1">
+                    <h2 id="videoTitulo" class="font-semibold text-base text-white line-clamp-2 mb-3">Título do vídeo</h2>
+                    <a id="linkDownload" href="#" target="_blank" rel="noopener noreferrer"
+                       class="inline-block bg-emerald-600 hover:bg-emerald-500 transition text-white font-semibold px-5 py-2.5 rounded-lg text-sm">
+                        ⬇ Baixar Vídeo Agora
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="border-t border-slate-800 py-5 text-center text-xs text-slate-500">
+        © 2026 Mega Dados — Todos os direitos reservados.
+    </footer>
+
+    <script>
+        const SERVIDOR = "https://onrender.com";
+
+        async function buscarVideo() {
+            const urlInput = document.getElementById("videoUrl").value.trim();
+            const loading = document.getElementById("loading");
+            const resultado = document.getElementById("resultado");
+            const erroBox = document.getElementById("erroBox");
+            const btn = document.getElementById("btnBuscar");
+
+            if (!urlInput) {
+                erroBox.textContent = "Por favor, cole o link de um vídeo primeiro.";
+                erroBox.classList.remove("hidden");
+                return;
+            }
+
+            erroBox.classList.add("hidden");
+            resultado.classList.add("hidden");
+            loading.classList.remove("hidden");
+            btn.disabled = true;
+
+            try {
+                const resposta = await fetch(`${SERVIDOR}/baixar?url=${encodeURIComponent(urlInput)}`);
+                const dados = await resposta.json();
+
+                if (!resposta.ok || !dados.link_video) {
+                    throw new Error(dados.detail || "Não foi possível obter o vídeo.");
+                }
+
+                document.getElementById("videoTitulo").textContent = dados.titulo || "Vídeo encontrado";
+                document.getElementById("videoCapa").src = dados.capa || "";
+                document.getElementById("linkDownload").href = dados.link_video;
+                resultado.classList.remove("hidden");
+            } catch (erro) {
+                erroBox.textContent = "Erro ao processar este link. Verifique se o vídeo é público e tente novamente.";
+                erroBox.classList.remove("hidden");
+            } finally {
+                loading.classList.add("hidden");
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
