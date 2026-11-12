@@ -250,7 +250,7 @@
              placeholder="Cole aqui o link do vídeo" aria-label="Link do vídeo">
       <button id="btn" type="button">Baixar</button>
     </div>
-    <p class="platforms">Funciona com TikTok, Instagram Reels, Facebook e YouTube.</p>
+    <p class="platforms">Funciona com TikTok, Instagram Reels e Facebook.</p>
 
     <div class="status" aria-live="polite">
       <div id="loading" class="loading">
@@ -264,8 +264,8 @@
         <img id="cover" class="cover" alt="Capa do vídeo" referrerpolicy="no-referrer">
         <div class="info">
           <h2 id="title"></h2>
-          <a id="download" class="download" href="#" target="_blank" rel="noopener noreferrer">Baixar vídeo</a>
-          <p class="hint">Se o vídeo abrir noutra página, toque e segure sobre ele (ou clique nos três pontos) e escolha “Guardar vídeo” / “Baixar”.</p>
+          <a id="download" class="download" href="#" rel="noopener noreferrer">Baixar vídeo</a>
+          <p class="hint">O download começa automaticamente. Se não começar, aguarde uns segundos, pois o vídeo passa primeiro pelo nosso servidor.</p>
         </div>
       </div>
     </div>
@@ -288,6 +288,7 @@
 <script>
   // Endereço da API no Render
   const API_URL = "https://mega-dados-baixador.onrender.com/baixar";
+  const DOWNLOAD_URL = "https://mega-dados-baixador.onrender.com/download";
 
   const input = document.getElementById("link");
   const btn = document.getElementById("btn");
@@ -353,7 +354,9 @@
       }
 
       title.textContent = dados.titulo || "Vídeo encontrado";
-      download.href = dados.link_video;
+
+      // O download passa pelo nosso servidor, para evitar o erro 403 do TikTok
+      download.href = DOWNLOAD_URL + "?url=" + encodeURIComponent(link);
 
       if (dados.capa) {
         cover.src = dados.capa;
