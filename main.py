@@ -17,7 +17,7 @@ def home():
 
 @app.get("/baixar")
 def obter_video(url: str):
-    opcoes = {'format': 'best', 'quiet': True}
+    opcoes = {'format': 'best', 'quiet': True, 'noplaylist': True}
     try:
         with yt_dlp.YoutubeDL(opcoes) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -27,4 +27,5 @@ def obter_video(url: str):
                 "link_video": info.get("url")
             }
     except Exception as e:
+        print("ERRO:", e)
         raise HTTPException(status_code=500, detail="Não foi possível processar este vídeo.")
