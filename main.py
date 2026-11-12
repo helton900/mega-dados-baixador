@@ -1,7 +1,49 @@
-import tempfile, os, glob
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
+import yt_dlp
+import tempfile
+import os
+import glob
+import re
 import shutil
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+OPCOES = {'format': 'best', 'quiet': True, 'noplaylist': True}
+
+
+def extrair(url: str):
+    with yt_dlp.YoutubeDL(OPCOES) as ydl:
+        return ydl.extract_info(url, download=False)
+
+
+@app.get("/")
+def home():
+    return {"status": "Servidor Mega Dados online!"}
+
+
+@app.get("/baixar")
+def obter_video(url: str):
+    try:
+        info = extrair(url)
+        return {
+            "titulo": info.get("title"),
+            "capa": info.get("thumbnail"),
+            "link_video": info.get("url")
+        }
+    except Exception as e:
+        print("ERRO:", e)
+        raise HTTPException(status_code=500, detail="Não foi possível processar este vídeo.")
+
 
 @app.get("/download")
 def descarregar(url: str):
