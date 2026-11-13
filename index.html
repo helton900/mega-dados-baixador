@@ -122,4 +122,435 @@
     display: flex; align-items: center; gap: 8px;
   }
   .quality-label svg { width: 16px; height: 16px; flex: none; }
-  .quality-options {
+  .quality-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .q-opt { position: relative; }
+  .q-opt input {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer; margin: 0;
+  }
+  .q-opt .q-box {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; text-align: center; min-height: 62px; padding: 8px 6px;
+    background: rgba(5, 9, 30, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+  .q-opt .q-name { font-weight: 800; font-size: 1rem; }
+  .q-opt .q-desc { font-size: 0.74rem; color: var(--muted); line-height: 1.25; }
+  .q-opt:hover .q-box { border-color: rgba(255, 255, 255, 0.3); }
+  .q-opt input:checked + .q-box {
+    border-color: var(--accent);
+    background: rgba(61, 123, 255, 0.18);
+    box-shadow: 0 0 0 3px rgba(61, 123, 255, 0.3);
+  }
+  .q-opt input:checked + .q-box .q-desc { color: var(--text); }
+  .q-opt input:focus-visible + .q-box { outline: 3px solid #fff; outline-offset: 2px; }
+
+  /* Etiquetas das plataformas */
+  .chips { margin-top: 14px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding-bottom: 4px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; color: var(--muted); line-height: 1;
+    border: 1px solid var(--card-border); border-radius: 999px;
+    padding: 7px 14px 7px 10px; background: rgba(255, 255, 255, 0.04);
+  }
+  .chip svg { width: 18px; height: 18px; flex: none; display: block; }
+
+  /* Estados */
+  .status { margin-top: 22px; }
+  .loading { display: none; align-items: center; justify-content: center; gap: 14px; color: var(--muted); padding: 10px 0; }
+  .loading.show { display: flex; }
+  .spinner {
+    flex: none; width: 26px; height: 26px;
+    border: 3px solid var(--card-border); border-top-color: var(--accent-hover);
+    border-radius: 50%; animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error {
+    display: none; background: var(--error-bg); color: var(--error-text);
+    border: 1px solid rgba(255, 180, 194, 0.3); border-radius: 14px; padding: 14px 16px;
+  }
+  .error.show { display: block; }
+
+  /* Resultado */
+  .result {
+    display: none; background: #fff; color: #0a1330;
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    animation: subir 0.35s ease;
+  }
+  @keyframes subir { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .result.show { display: flex; }
+  .result .cover { width: 220px; flex: none; background: #dfe7fb; object-fit: cover; display: block; }
+  .result .info { padding: 22px; display: flex; flex-direction: column; justify-content: center; gap: 14px; min-width: 0; }
+  .ok-tag { font-size: 0.78rem; font-weight: 700; color: #0f8a5f; letter-spacing: 0.4px; text-transform: uppercase; }
+  .result h2 {
+    font-size: 1.05rem; line-height: 1.4; font-weight: 700; overflow-wrap: anywhere;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .download {
+    align-self: flex-start; display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; text-decoration: none; font-weight: 700;
+    padding: 14px 28px; border-radius: 12px; transition: filter 0.15s;
+  }
+  .download:hover { filter: brightness(1.12); }
+  .hint { font-size: 0.85rem; color: #4a5b86; }
+
+  /* Secções */
+  section.block { margin-top: 64px; }
+  section.block h3 { font-size: 1.35rem; text-align: center; margin-bottom: 20px; letter-spacing: -0.01em; }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .feature {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: var(--radius); padding: 20px;
+  }
+  .feature .ico { font-size: 1.6rem; margin-bottom: 8px; }
+  .feature h4 { font-size: 1rem; margin-bottom: 4px; }
+  .feature p { color: var(--muted); font-size: 0.92rem; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; counter-reset: passo; }
+  .step {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: var(--radius); padding: 20px; counter-increment: passo; color: var(--muted);
+  }
+  .step::before {
+    content: counter(passo); display: grid; place-items: center;
+    width: 32px; height: 32px; border-radius: 50%; margin-bottom: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; font-weight: 800;
+  }
+
+  details {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 10px;
+  }
+  summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--accent-hover); font-size: 1.3rem; line-height: 1; }
+  details[open] summary::after { content: "–"; }
+  details p { margin-top: 10px; color: var(--muted); font-size: 0.95rem; }
+
+  footer {
+    margin-top: 40px; border-top: 1px solid var(--card-border);
+    padding: 22px 0; color: var(--muted); font-size: 0.88rem; text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    main { padding-top: 28px; }
+    .badge { display: none; }
+    .form { flex-wrap: wrap; }
+    .form input[type="url"] { flex-basis: 100%; }
+    .form button { flex: 1; }
+    .q-opt .q-box { min-height: 66px; padding: 8px 4px; }
+    .q-opt .q-desc { font-size: 0.7rem; }
+    .features, .steps { grid-template-columns: 1fr; }
+    .result.show { flex-direction: column; }
+    .result .cover { width: 100%; max-height: 260px; }
+    .download { align-self: stretch; text-align: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 3s; }
+    .result { animation: none; }
+    button, .download, .q-box { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-in">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>Mega <span class="light">Dados</span></div>
+    </div>
+    <div class="badge">100% grátis • Sem registo</div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="hero">
+      <h1>Baixe vídeos das <span class="grad">redes sociais</span>, grátis.</h1>
+      <p class="lead">Cole o link do vídeo, toque em Baixar e guarde-o no seu telemóvel ou computador, em segundos.</p>
+    </div>
+
+    <div class="panel">
+      <div class="form">
+        <input id="link" type="url" inputmode="url" autocomplete="off"
+               placeholder="Cole aqui o link do vídeo" aria-label="Link do vídeo">
+        <button id="paste" class="btn-ghost" type="button">Colar</button>
+        <button id="btn" class="btn-main" type="button">Baixar</button>
+      </div>
+
+      <div class="quality" role="radiogroup" aria-label="Qualidade do vídeo">
+        <div class="quality-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+          Qualidade do vídeo
+        </div>
+        <div class="quality-options">
+          <label class="q-opt">
+            <input type="radio" name="qualidade" value="480">
+            <span class="q-box">
+              <span class="q-name">480p</span>
+              <span class="q-desc">Poupa dados</span>
+            </span>
+          </label>
+          <label class="q-opt">
+            <input type="radio" name="qualidade" value="720" checked>
+            <span class="q-box">
+              <span class="q-name">720p</span>
+              <span class="q-desc">Recomendado</span>
+            </span>
+          </label>
+          <label class="q-opt">
+            <input type="radio" name="qualidade" value="1080">
+            <span class="q-box">
+              <span class="q-name">1080p</span>
+              <span class="q-desc">Máxima qualidade</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="chips">
+        <span class="chip">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ffffff" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+          TikTok
+        </span>
+        <span class="chip">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <defs>
+              <linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0" stop-color="#feda75"/>
+                <stop offset="0.35" stop-color="#fa7e1e"/>
+                <stop offset="0.6" stop-color="#d62976"/>
+                <stop offset="1" stop-color="#4f5bd5"/>
+              </linearGradient>
+            </defs>
+            <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#igGrad)" stroke-width="2.2"/>
+            <circle cx="12" cy="12" r="4.3" fill="none" stroke="url(#igGrad)" stroke-width="2.2"/>
+            <circle cx="17.6" cy="6.4" r="1.4" fill="url(#igGrad)"/>
+          </svg>
+          Instagram Reels
+        </span>
+        <span class="chip">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1877F2" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>
+          Facebook
+        </span>
+      </div>
+    </div>
+
+    <div class="status" aria-live="polite">
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <div id="loadingText">A procurar o vídeo…</div>
+      </div>
+
+      <div id="error" class="error"></div>
+
+      <div id="result" class="result">
+        <img id="cover" class="cover" alt="Capa do vídeo" referrerpolicy="no-referrer">
+        <div class="info">
+          <div class="ok-tag">✔ Vídeo encontrado</div>
+          <h2 id="title"></h2>
+          <a id="download" class="download" href="#" rel="noopener noreferrer">⬇ Baixar vídeo (720p)</a>
+          <p class="hint">Pode mudar a qualidade acima a qualquer momento. Se o vídeo original tiver menos qualidade, será usada a melhor disponível. O download pode demorar alguns segundos a começar.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="block">
+      <h3>Por que usar o Mega Dados?</h3>
+      <div class="features">
+        <div class="feature">
+          <div class="ico">⚡</div>
+          <h4>Rápido</h4>
+          <p>Cole o link e o vídeo fica pronto em poucos segundos.</p>
+        </div>
+        <div class="feature">
+          <div class="ico">🆓</div>
+          <h4>Grátis</h4>
+          <p>Sem pagamentos, sem registo e sem instalar nada.</p>
+        </div>
+        <div class="feature">
+          <div class="ico">📱</div>
+          <h4>Em qualquer aparelho</h4>
+          <p>Funciona no telemóvel, tablet e computador.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3>Como usar</h3>
+      <div class="steps">
+        <div class="step">Abra a rede social e copie o link do vídeo.</div>
+        <div class="step">Cole o link no campo acima, escolha a qualidade e toque em Baixar.</div>
+        <div class="step">Toque em Baixar vídeo e guarde o arquivo.</div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3>Perguntas frequentes</h3>
+      <details>
+        <summary>Que qualidade devo escolher?</summary>
+        <p>480p gasta menos dados móveis e é ótima para ver no telemóvel. 720p é o equilíbrio recomendado. 1080p tem a melhor imagem, mas o arquivo é maior. Se o vídeo original tiver menos qualidade do que a escolhida, é usada a melhor disponível.</p>
+      </details>
+      <details>
+        <summary>O primeiro pedido demora, é normal?</summary>
+        <p>Sim. O servidor grátis adormece quando ninguém o usa, e a primeira vez pode demorar até 1 minuto a acordar. Depois fica rápido.</p>
+      </details>
+      <details>
+        <summary>Por que não funciona com YouTube?</summary>
+        <p>De momento o site está focado em TikTok, Instagram Reels e Facebook. O YouTube bloqueia este tipo de servidores.</p>
+      </details>
+      <details>
+        <summary>O vídeo não é encontrado, o que faço?</summary>
+        <p>Confirme que o link está completo e que o vídeo é público. Vídeos privados ou apagados não podem ser baixados.</p>
+      </details>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">© <span id="year"></span> Mega Dados. Use apenas para vídeos que tem direito de guardar. TikTok, Instagram e Facebook são marcas dos respetivos proprietários, sem qualquer ligação a este site.</div>
+</footer>
+
+<script>
+  // Endereços da API no Render
+  const API_URL = "https://mega-dados-baixador.onrender.com/baixar";
+  const DOWNLOAD_URL = "https://mega-dados-baixador.onrender.com/download";
+
+  const input = document.getElementById("link");
+  const btn = document.getElementById("btn");
+  const pasteBtn = document.getElementById("paste");
+  const loading = document.getElementById("loading");
+  const loadingText = document.getElementById("loadingText");
+  const errorBox = document.getElementById("error");
+  const resultBox = document.getElementById("result");
+  const cover = document.getElementById("cover");
+  const title = document.getElementById("title");
+  const download = document.getElementById("download");
+  const qualityInputs = document.querySelectorAll('input[name="qualidade"]');
+
+  // Link do vídeo já processado (usado para atualizar o botão ao mudar a qualidade)
+  let linkAtual = null;
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  function qualidadeSelecionada() {
+    const marcado = document.querySelector('input[name="qualidade"]:checked');
+    return marcado ? marcado.value : "720";
+  }
+
+  function atualizarBotaoDownload() {
+    if (!linkAtual) return;
+    const q = qualidadeSelecionada();
+    download.href = DOWNLOAD_URL + "?url=" + encodeURIComponent(linkAtual) + "&q=" + q;
+    download.textContent = "⬇ Baixar vídeo (" + q + "p)";
+  }
+
+  qualityInputs.forEach((el) => el.addEventListener("change", atualizarBotaoDownload));
+
+  function reset() {
+    loading.classList.remove("show");
+    errorBox.classList.remove("show");
+    resultBox.classList.remove("show");
+  }
+
+  function showError(msg) {
+    reset();
+    errorBox.textContent = msg;
+    errorBox.classList.add("show");
+  }
+
+  pasteBtn.addEventListener("click", async () => {
+    try {
+      const texto = await navigator.clipboard.readText();
+      if (texto) { input.value = texto.trim(); input.focus(); }
+    } catch (e) {
+      input.focus();
+      showError("Não foi possível colar automaticamente. Toque no campo e cole o link manualmente.");
+    }
+  });
+
+  async function baixar() {
+    const link = input.value.trim();
+
+    if (!/^https?:\/\//i.test(link)) {
+      showError("Cole um link válido, começando por http:// ou https://");
+      return;
+    }
+
+    reset();
+    linkAtual = null;
+    loading.classList.add("show");
+    loadingText.textContent = "A procurar o vídeo…";
+    btn.disabled = true;
+
+    // Servidores grátis do Render "adormecem"; a 1.ª vez pode demorar.
+    const avisoLento = setTimeout(() => {
+      loadingText.textContent = "O servidor está a acordar. Pode demorar até 1 minuto, aguarde…";
+    }, 6000);
+
+    const controlador = new AbortController();
+    const limite = setTimeout(() => controlador.abort(), 90000);
+
+    try {
+      const resposta = await fetch(API_URL + "?url=" + encodeURIComponent(link), {
+        signal: controlador.signal
+      });
+
+      let dados = null;
+      try { dados = await resposta.json(); } catch (e) { /* resposta sem JSON */ }
+
+      if (!resposta.ok || !dados || !dados.link_video) {
+        const motivo = dados && (dados.erro || dados.detail || dados.error);
+        showError(
+          typeof motivo === "string" && motivo
+            ? "Não foi possível baixar: " + motivo
+            : "Não foi possível baixar este vídeo. Confirme se o link está correcto e se o vídeo é público."
+        );
+        return;
+      }
+
+      title.textContent = dados.titulo || "Vídeo encontrado";
+
+      // O download passa pelo nosso servidor, com a qualidade escolhida
+      linkAtual = link;
+      atualizarBotaoDownload();
+
+      if (dados.capa) {
+        cover.src = dados.capa;
+        cover.style.display = "block";
+        cover.onerror = () => { cover.style.display = "none"; };
+      } else {
+        cover.style.display = "none";
+      }
+
+      reset();
+      resultBox.classList.add("show");
+    } catch (erro) {
+      if (erro.name === "AbortError") {
+        showError("O servidor demorou demasiado a responder. Tente novamente.");
+      } else {
+        showError("Não foi possível ligar ao servidor. Verifique a internet e tente novamente.");
+      }
+    } finally {
+      clearTimeout(avisoLento);
+      clearTimeout(limite);
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener("click", baixar);
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") baixar(); });
+</script>
+</body>
+</html>
