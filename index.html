@@ -160,6 +160,25 @@
     .download { align-self: stretch; text-align: center; }
   }
 </style>
+
+<!-- Google Analytics: troque o ID abaixo pelo seu (formato G-XXXXXXXXXX) -->
+<script>
+  var GA_ID = "G-XXXXXXXXXX";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  if (/^G-[A-Z0-9]{6,}$/.test(GA_ID) && GA_ID !== "G-XXXXXXXXXX") {
+    var gaScript = document.createElement("script");
+    gaScript.async = true;
+    gaScript.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+    document.head.appendChild(gaScript);
+    gtag("js", new Date());
+    gtag("config", GA_ID);
+  }
+  // Envia um evento só se o Analytics estiver ativo
+  function track(nome, params) {
+    try { if (GA_ID !== "G-XXXXXXXXXX") gtag("event", nome, params || {}); } catch (e) {}
+  }
+</script>
 </head>
 <body>
 
@@ -290,6 +309,10 @@
         <summary>O vídeo não é encontrado, o que faço?</summary>
         <p>Confirme que o link está completo e que o vídeo é público. Vídeos privados ou apagados não podem ser baixados.</p>
       </details>
+      <details>
+        <summary>Que dados o site recolhe?</summary>
+        <p>Usamos estatísticas anónimas de visitas (como país, dispositivo e páginas vistas) para melhorar o site. Não guardamos os links dos vídeos que cola nem pedimos dados pessoais.</p>
+      </details>
     </section>
 
   </div>
@@ -318,6 +341,15 @@
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
+  function plataforma(url) {
+    var u = url.toLowerCase();
+    if (u.indexOf("tiktok.com") > -1) return "tiktok";
+    if (u.indexOf("instagram.com") > -1) return "instagram";
+    if (u.indexOf("facebook.com") > -1 || u.indexOf("fb.watch") > -1) return "facebook";
+    if (u.indexOf("youtube.com") > -1 || u.indexOf("youtu.be") > -1) return "youtube";
+    return "outra";
+  }
+
   function qualidadeSelecionada() {
     var marcado = document.querySelector('input[name="qualidade"]:checked');
     return marcado ? marcado.value : "720";
@@ -333,6 +365,13 @@
   for (var i = 0; i < qualityInputs.length; i++) {
     qualityInputs[i].addEventListener("change", atualizarBotaoDownload);
   }
+
+  // Conta cliques em "Baixar vídeo" (plataforma e qualidade, sem guardar o link)
+  download.addEventListener("click", function () {
+    if (linkAtual) {
+      track("baixar_video", { plataforma: plataforma(linkAtual), qualidade: qualidadeSelecionada() + "p" });
+    }
+  });
 
   function reset() {
     loading.classList.remove("show");
@@ -390,6 +429,7 @@
       try { dados = await resposta.json(); } catch (e) {}
 
       if (!resposta.ok || !dados || !dados.link_video) {
+        track("buscar_video_erro", { plataforma: plataforma(link) });
         var motivo = dados && (dados.erro || dados.detail || dados.error);
         showError(
           typeof motivo === "string" && motivo
@@ -398,6 +438,8 @@
         );
         return;
       }
+
+      track("buscar_video", { plataforma: plataforma(link) });
 
       title.textContent = dados.titulo || "Vídeo encontrado";
       linkAtual = link;
